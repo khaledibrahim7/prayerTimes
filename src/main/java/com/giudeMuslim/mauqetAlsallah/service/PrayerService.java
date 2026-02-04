@@ -31,7 +31,4 @@ public class PrayerService {
 
         return response;
     }
-
-
-
 }

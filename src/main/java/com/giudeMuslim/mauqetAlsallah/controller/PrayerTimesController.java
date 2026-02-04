@@ -25,8 +25,4 @@ public class PrayerTimesController {
     public ResponseEntity<Map<String, String>> getPrayerTimes(@RequestParam double lat, @RequestParam double lng) {
         return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng));
     }
-
-
-
-
 }
