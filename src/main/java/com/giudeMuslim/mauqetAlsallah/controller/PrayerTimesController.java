@@ -21,7 +21,10 @@ public class PrayerTimesController {
     private final PrayerService prayerService;
 
     @GetMapping
-    public ResponseEntity<Map<String, String>> getPrayerTimes(@RequestParam double lat, @RequestParam double lng) {
-        return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng));
+    public ResponseEntity<Map<String, String>> getPrayerTimes(
+            @RequestParam double lat,
+            @RequestParam double lng,
+            @RequestParam String timezone) { // إضافة الـ Parameter هنا
+        return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng, timezone));
     }
 }
