@@ -24,7 +24,7 @@ public class PrayerTimesController {
     public ResponseEntity<Map<String, String>> getPrayerTimes(
             @RequestParam double lat,
             @RequestParam double lng,
-            @RequestParam String timezone) { // إضافة الـ Parameter هنا
+            @RequestParam String timezone) {
         return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng, timezone));
     }
 }
