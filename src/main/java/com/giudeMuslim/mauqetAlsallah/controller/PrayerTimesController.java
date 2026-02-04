@@ -20,7 +20,6 @@ import java.util.Random;
 public class PrayerTimesController {
     private final PrayerService prayerService;
 
-
     @GetMapping
     public ResponseEntity<Map<String, String>> getPrayerTimes(@RequestParam double lat, @RequestParam double lng) {
         return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng));

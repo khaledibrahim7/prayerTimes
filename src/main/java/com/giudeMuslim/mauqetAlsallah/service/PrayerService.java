@@ -13,6 +13,8 @@ import java.util.Random;
 
 @Service
 public class PrayerService {
+
+
     public Map<String, String> getPrayerTimesMap(double lat, double lng) {
         Coordinates coordinates = new Coordinates(lat, lng);
         CalculationParameters params = CalculationMethod.EGYPTIAN.getParameters();
