@@ -14,7 +14,14 @@ public class AzkarService {
                 "الحمد لله",
                 "الله أكبر",
                 "سبحان الله وبحمده",
+                "لا حول ولا قوة إلا بالله",
+                "سبحان الله العظيم",
                 "لا إله إلا الله"};
+
         return azkar[new Random().nextInt(azkar.length)];
+    }
+
+    public String salyAlaELnaby() {
+        return "صلي ع النبي";
     }
 }

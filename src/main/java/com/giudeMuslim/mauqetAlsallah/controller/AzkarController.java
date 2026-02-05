@@ -15,7 +15,7 @@ public class AzkarController {
 
     @GetMapping("/salyAlaELnaby")
     public String salyAlaELnaby() {
-        return "صلي ع النبي";
+        return AzkarService.salyAlaELnaby();
     }
 
     @GetMapping
