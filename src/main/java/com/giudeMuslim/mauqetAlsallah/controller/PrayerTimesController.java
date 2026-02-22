@@ -1,17 +1,11 @@
 package com.giudeMuslim.mauqetAlsallah.controller;
 
-import com.batoulapps.adhan.PrayerTimes;
 import com.giudeMuslim.mauqetAlsallah.service.PrayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/prayerTimes")
@@ -27,4 +21,10 @@ public class PrayerTimesController {
             @RequestParam String timezone) {
         return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng, timezone));
     }
+
+    @GetMapping(name = "/quran", produces = "text/plain;charset=UTF-8")
+    public String quran(){
+         return "هل قرات وردك من القرأن اليوم ؟";
+        }
+
 }
