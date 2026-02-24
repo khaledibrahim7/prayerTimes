@@ -16,7 +16,9 @@ public class PrayerService {
 
     public Map<String, String> getPrayerTimesMap(double lat, double lng, String timezone) {
         Coordinates coordinates = new Coordinates(lat, lng);
-        CalculationParameters params = CalculationMethod.EGYPTIAN.getParameters();
+
+        CalculationParameters params = CalculationMethod.MUSLIM_WORLD_LEAGUE.getParameters();
+        params.highLatitudeRule = HighLatitudeRule.TWILIGHT_ANGLE;
 
         ZoneId zoneId = ZoneId.of(timezone);
         ZonedDateTime now = ZonedDateTime.now(zoneId);
