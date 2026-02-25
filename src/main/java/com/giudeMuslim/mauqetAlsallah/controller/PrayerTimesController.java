@@ -22,7 +22,7 @@ public class PrayerTimesController {
         return ResponseEntity.ok(prayerService.getPrayerTimesMap(lat, lng, timezone));
     }
 
-    @GetMapping(name = "/quran", produces = "text/plain;charset=UTF-8")
+    @GetMapping(value = "/quran", produces = "text/plain;charset=UTF-8")
     public String quran(){
          return "هل قرات وردك من القرأن اليوم ؟";
         }
