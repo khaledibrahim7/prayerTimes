@@ -24,7 +24,7 @@ public class PrayerTimesController {
 
     @GetMapping(value = "/quran", produces = "text/plain;charset=UTF-8")
     public String quran(){
-         return "هل قرات وردك من القرأن اليوم ؟";
+         return "هل قرأتَ وِردَكَ من القرآنِ اليوم؟";
         }
 
 }

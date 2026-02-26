@@ -9,10 +9,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.batoulapps.adhan.CalculationMethod;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,25 +24,25 @@ public class PrayerService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final Map<String, String> countryCache = new HashMap<>();
-
+    private final Map<String, String> countryCache = new ConcurrentHashMap<>();
 
     private String getCountryCode(double lat, double lng) {
 
-        String key = lat + "," + lng;
+        String key = String.format("%.2f,%.2f", lat, lng);
 
         if (countryCache.containsKey(key)) {
             return countryCache.get(key);
         }
 
         try {
+
             String url = "https://nominatim.openstreetmap.org/reverse?format=json"
                     + "&lat=" + lat
                     + "&lon=" + lng
                     + "&zoom=3&addressdetails=1";
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("User-Agent", "SmartPrayerApp");
+            headers.set("User-Agent", "SmartPrayerApp/1.0 (contact@smartprayer.app)");
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -65,38 +68,53 @@ public class PrayerService {
         }
     }
 
-
     private CalculationParameters getParamsByCountry(String countryCode) {
+
+        CalculationParameters params;
 
         switch (countryCode) {
 
             case "SA":
-                return CalculationMethod.UMM_AL_QURA.getParameters();
+                params = CalculationMethod.UMM_AL_QURA.getParameters();
+                params.madhab = Madhab.HANAFI;
+                break;
 
             case "EG":
-                return CalculationMethod.EGYPTIAN.getParameters();
+                params = CalculationMethod.EGYPTIAN.getParameters();
+                params.madhab = Madhab.SHAFI;
+                break;
 
             case "PK":
             case "IN":
             case "BD":
-                return CalculationMethod.KARACHI.getParameters();
+                params = CalculationMethod.KARACHI.getParameters();
+                params.madhab = Madhab.HANAFI;
+                break;
 
             case "US":
             case "CA":
-                return CalculationMethod.NORTH_AMERICA.getParameters();
+                params = CalculationMethod.NORTH_AMERICA.getParameters();
+                params.madhab = Madhab.SHAFI;
+                break;
 
             case "GB":
             case "FR":
             case "DE":
             case "ES":
             case "IT":
-                return CalculationMethod.MUSLIM_WORLD_LEAGUE.getParameters();
+                params = CalculationMethod.MUSLIM_WORLD_LEAGUE.getParameters();
+                params.madhab = Madhab.SHAFI;
+                break;
 
             default:
-                return CalculationMethod.MUSLIM_WORLD_LEAGUE.getParameters();
+                params = CalculationMethod.MUSLIM_WORLD_LEAGUE.getParameters();
+                params.madhab = Madhab.SHAFI;
         }
-    }
 
+        params.highLatitudeRule = HighLatitudeRule.TWILIGHT_ANGLE;
+
+        return params;
+    }
 
     public Map<String, String> getPrayerTimesMap(double lat, double lng, String timezone) {
 
@@ -104,10 +122,8 @@ public class PrayerService {
 
         CalculationParameters params = getParamsByCountry(countryCode);
 
-        params.highLatitudeRule = HighLatitudeRule.TWILIGHT_ANGLE;
-        params.madhab = Madhab.SHAFI;
-
         ZoneId zoneId;
+
         try {
             zoneId = ZoneId.of(timezone);
         } catch (Exception e) {
@@ -125,7 +141,7 @@ public class PrayerService {
 
         Coordinates coordinates = new Coordinates(lat, lng);
 
-        PrayerTimes times =
+        PrayerTimes prayerTimes =
                 new PrayerTimes(coordinates, dateComponents, params);
 
         DateTimeFormatter formatter =
@@ -133,14 +149,15 @@ public class PrayerService {
 
         Map<String, String> response = new LinkedHashMap<>();
 
-        response.put("fajr", times.fajr.toInstant().atZone(zoneId).format(formatter));
-        response.put("sunrise", times.sunrise.toInstant().atZone(zoneId).format(formatter));
-        response.put("dhuhr", times.dhuhr.toInstant().atZone(zoneId).format(formatter));
-        response.put("asr", times.asr.toInstant().atZone(zoneId).format(formatter));
-        response.put("maghrib", times.maghrib.toInstant().atZone(zoneId).format(formatter));
-        response.put("isha", times.isha.toInstant().atZone(zoneId).format(formatter));
+        response.put("fajr", prayerTimes.fajr.toInstant().atZone(zoneId).format(formatter));
+        response.put("sunrise", prayerTimes.sunrise.toInstant().atZone(zoneId).format(formatter));
+        response.put("dhuhr", prayerTimes.dhuhr.toInstant().atZone(zoneId).format(formatter));
+        response.put("asr", prayerTimes.asr.toInstant().atZone(zoneId).format(formatter));
+        response.put("maghrib", prayerTimes.maghrib.toInstant().atZone(zoneId).format(formatter));
+        response.put("isha", prayerTimes.isha.toInstant().atZone(zoneId).format(formatter));
+
+        response.put("serverUtc", Instant.now().toString());
 
         return response;
-
     }
 }
