@@ -13,20 +13,23 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class PrayerTimesController {
+
+
     private final PrayerService prayerService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getTimes(
+    public ResponseEntity<Map<String, String>> getPrayers(
             @RequestParam double lat,
             @RequestParam double lng,
-            @RequestParam(defaultValue = "UTC") String timezone) {
+            @RequestParam(defaultValue = "3") int method) {
 
-        Map<String, String> prayerTimes = prayerService.getPrayerTimes(lat, lng, timezone);
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.putAll(prayerTimes);
-        response.put("serverUtc", System.currentTimeMillis());
-        response.put("isRamadan", Boolean.parseBoolean(prayerTimes.get("isRamadan")));
-        return ResponseEntity.ok(response);
+        Map<String, String> times = prayerService.getPrayerTimes(lat, lng, method);
+
+        if (times.isEmpty()) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(times);
     }
 
     @GetMapping(value = "/quran", produces = "text/plain;charset=UTF-8")
