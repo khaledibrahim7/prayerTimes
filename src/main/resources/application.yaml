@@ -1,6 +1,13 @@
 spring:
   application:
     name: mauqetAlsallah
+
+  cache:
+    type: caffeine
+    cache-names: cityNames
+    caffeine:
+      spec: maximumSize=10000,expireAfterWrite=24h
+
 server:
   address: 0.0.0.0
   port: 8080
