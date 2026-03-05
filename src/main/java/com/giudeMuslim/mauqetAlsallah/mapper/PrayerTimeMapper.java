@@ -10,16 +10,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @Component
 public class PrayerTimeMapper {
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public Map<String, String> map(PrayerTimes times, ZoneId zoneId) {
-
         Map<String, Date> raw = new LinkedHashMap<>();
-
         raw.put("fajr", times.fajr);
         raw.put("sunrise", times.sunrise);
         raw.put("dhuhr", times.dhuhr);

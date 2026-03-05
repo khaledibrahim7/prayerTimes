@@ -1,7 +1,6 @@
 spring:
   application:
     name: mauqetAlsallah
-
   cache:
     type: caffeine
     cache-names: cityNames

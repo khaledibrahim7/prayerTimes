@@ -14,10 +14,12 @@ import java.util.Map;
 public class CityNameResolver {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String API_URL = "https://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s";
+    private static final String API_URL =
+            "https://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s";
 
 
-    @Cacheable(value = "cityNames", key = "#lat + ',' + #lng")
+    @Cacheable(value = "cityNames",
+            key = "#lat + ',' + #lng + '-' + T(java.time.LocalDate).now().toString()")
     public String resolve(double lat, double lng) {
         try {
             double roundedLat = Math.round(lat * 1000.0) / 1000.0;

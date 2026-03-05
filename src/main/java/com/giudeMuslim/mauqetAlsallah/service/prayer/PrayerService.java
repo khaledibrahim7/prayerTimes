@@ -7,6 +7,7 @@ import com.giudeMuslim.mauqetAlsallah.mapper.PrayerTimeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -21,7 +22,6 @@ public class PrayerService {
     private final CityNameResolver cityNameResolver;
 
     public PrayerResponse getUniversalPrayerTimes(double lat, double lng, String timezoneId) {
-
         ZoneId zoneId = ZoneId.of(timezoneId);
         ZonedDateTime now = ZonedDateTime.now(zoneId);
 
@@ -35,9 +35,9 @@ public class PrayerService {
 
         CalculationMethod method = methodResolver.resolve(coordinates);
         CalculationParameters params = method.getParameters();
-
         params.madhab = madhabResolver.resolve(coordinates);
         params.highLatitudeRule = HighLatitudeRule.TWILIGHT_ANGLE;
+
         String cityName = cityNameResolver.resolve(lat, lng);
         PrayerTimes prayerTimes = new PrayerTimes(coordinates, date, params);
 
@@ -45,6 +45,7 @@ public class PrayerService {
                 method.name(),
                 cityName,
                 timezoneId,
+                now.toLocalDateTime(),
                 prayerTimeMapper.map(prayerTimes, zoneId)
         );
     }
